@@ -9,6 +9,7 @@ uvicorn = "*"
 pytest = "*"
 pycountry = "*"
 openai = "*"
+python-dotenv = "*"
 
 [dev-packages]
 
