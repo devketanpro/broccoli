@@ -7,8 +7,6 @@ from fastapi import HTTPException
 from app.constants import API_KEY, PROMPT, MODEL, API_TIMEOUT, SEASONS
 from app.errors import RESPONSE_ERROR, API_ERROR, CONNECTION_OR_RATELIMIT_ERROR, UNKNOWN_ERROR, TIMEOUT_ERROR
 
-PROMPT = "Please enter your {country} and {season}."
-
 ROLE_KEY = 'role'
 CONTENT_KEY = 'content'
 
