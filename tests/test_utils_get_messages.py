@@ -1,5 +1,6 @@
 import pytest
 
+from app.constants import PROMPT
 from app.utils import get_messages
 
 
@@ -10,7 +11,7 @@ class TestGetMessages:
         country = "USA"
         season = "summer"
         expected_messages = [
-            {"role": "user", "content": "Please enter your USA and summer."}
+            {"role": "user", "content": PROMPT.format(country=country, season=season)}
         ]
         assert get_messages(country, season) == expected_messages
 
@@ -47,7 +48,7 @@ class TestGetMessages:
         country = "USA"
         season = "summer"
         expected_messages = [
-            {"role": "user", "content": "Please enter your USA and summer."}
+            {"role": "user", "content": PROMPT.format(country=country, season=season)}
         ]
         assert get_messages(country, season) == expected_messages
 
@@ -69,7 +70,7 @@ class TestGetMessages:
     def test_invalid_country(self):
         country = "USA2"
         season = "summer"
-        expected_messages = [{"role": "user", "content": "Please enter your USA2 and summer."}]
+        expected_messages = [{"role": "user", "content": PROMPT.format(country=country, season=season)}]
         assert get_messages(country, season) == expected_messages
 
     #  Returns a list with a single message when an invalid season is provided.
