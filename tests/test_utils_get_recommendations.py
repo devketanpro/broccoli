@@ -9,28 +9,40 @@ from app.errors import TIMEOUT_ERROR
 from app.utils import get_recommendations, get_messages
 
 
+@pytest.fixture
+def sample_response():
+    return {
+        "country": "USA",
+        "season": "summer",
+        "recommendations": [
+            "Skiing at Aspen, Colorado",
+            "Ice skating in Central Park, New York City",
+            "Visiting the Grand Canyon National Park, Arizona"
+        ]
+    }
+
 class TestGetRecommendations:
 
     #  Returns recommendations for valid country and season inputs
-    def test_valid_country_and_season(self, mocker):
+    def test_valid_country_and_season(self, mocker, sample_response):
         mocker.patch('openai.ChatCompletion.create',
-                     return_value=Mock(choices=[Mock(message=Mock(content=json.dumps({"recommendation": "test"})))]))
+                     return_value=Mock(choices=[Mock(message=Mock(content=json.dumps(sample_response)))]))
         result = get_recommendations("USA", "summer", get_messages_func=get_messages)
-        assert result == {"recommendation": "test"}
+        assert result == sample_response
 
     #  Returns recommendations for valid country and season inputs with specific language
-    def test_valid_country_and_season_with_language(self, mocker):
+    def test_valid_country_and_season_with_language(self, mocker, sample_response):
         mocker.patch('openai.ChatCompletion.create',
-                     return_value=Mock(choices=[Mock(message=Mock(content=json.dumps({"recommendation": "test"})))]))
+                     return_value=Mock(choices=[Mock(message=Mock(content=json.dumps(sample_response)))]))
         result = get_recommendations("USA", "summer", get_messages_func=get_messages)
-        assert result == {"recommendation": "test"}
+        assert result == sample_response
 
     #  Returns recommendations for valid country and season inputs with multiple messages
-    def test_valid_country_and_season_with_multiple_messages(self, mocker):
+    def test_valid_country_and_season_with_multiple_messages(self, mocker, sample_response):
         mocker.patch('openai.ChatCompletion.create',
-                     return_value=Mock(choices=[Mock(message=Mock(content=json.dumps({"recommendation": "test"})))]))
+                     return_value=Mock(choices=[Mock(message=Mock(content=json.dumps(sample_response)))]))
         result = get_recommendations("USA", "summer", get_messages_func=get_messages)
-        assert result == {"recommendation": "test"}
+        assert result == sample_response
 
     #  Raises HTTPException if OpenAI API returns an API error
     def test_api_error(self, mocker):
@@ -56,13 +68,6 @@ class TestGetRecommendations:
         mocker.patch('openai.ChatCompletion.create', side_effect=Exception)
         with pytest.raises(HTTPException):
             get_recommendations("USA", "summer", get_messages_func=get_messages)
-
-    #  Returns recommendations for valid country and season inputs with empty messages
-    def test_empty_messages(self, mocker):
-        mocker.patch('openai.ChatCompletion.create',
-                     return_value=Mock(choices=[Mock(message=Mock(content=json.dumps({"recommendation": "test"})))]))
-        result = get_recommendations("USA", "summer", get_messages_func=get_messages)
-        assert result == {"recommendation": "test"}
 
     #  Raises HTTPException for invalid country input
     def test_invalid_country(self):

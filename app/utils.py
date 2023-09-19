@@ -41,6 +41,12 @@ def get_messages(country: str, season: str) -> List[Dict[str, str]]:
     return [{ROLE_KEY: 'user', CONTENT_KEY: f'{prompt}'}]
 
 
+def validate_response(response: Dict) -> bool:
+    if "country" in response and "season" in response and "recommendations" in response:
+        if len(response["recommendations"]) == 3:
+            return True
+
+
 def get_recommendations(
         country: str,
         season: str,
@@ -61,10 +67,14 @@ def get_recommendations(
     messages = get_messages_func(country, season)
     try:
         response = make_chat_completion_request(messages)
-        if response.choices:
-            return ujson.loads(response.choices[0].message.content)
-        else:
+        if not response.choices:
             raise HTTPException(**RESPONSE_ERROR)
+
+        result = ujson.loads(response.choices[0].message.content)
+        if not validate_response(result):
+            raise HTTPException(**RESPONSE_ERROR)
+
+        return result
     except Exception as e:
         handle_error(e)
 
