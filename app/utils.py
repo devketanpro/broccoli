@@ -4,7 +4,7 @@ import openai
 import ujson
 from fastapi import HTTPException
 
-from app.constants import API_KEY, PROMPT, MODEL
+from app.constants import API_KEY, PROMPT, MODEL, API_TIMEOUT
 from app.errors import RESPONSE_ERROR, API_ERROR, CONNECTION_OR_RATELIMIT_ERROR, UNKNOWN_ERROR, TIMEOUT_ERROR
 
 
@@ -28,7 +28,7 @@ def get_recommendations(country: str, season: str) -> Dict[str, Any]:
             model=MODEL,
             messages=messages,
             api_key=API_KEY,
-            timeout=5,  # Set a timeout value in seconds
+            timeout=API_TIMEOUT,  # Set a timeout value in seconds
         )
         # Check if there are response choices
         if response.choices:

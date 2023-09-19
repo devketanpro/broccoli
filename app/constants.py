@@ -12,3 +12,4 @@ PROMPT = (
     "Provide short and quick response in three lines"
 )
 MESSAGE = {'role': 'user', 'content': '{prompt}'}
+API_TIMEOUT = 5
