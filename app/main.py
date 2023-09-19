@@ -16,4 +16,3 @@ async def travel_recommendation(country: str, season: str) -> Union[Dict[str, An
         raise HTTPException(**SEASON_ERROR)
 
     return get_recommendations(country=country, season=season)
-
