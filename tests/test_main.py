@@ -60,21 +60,21 @@ class TestTravelRecommendation:
 
     #  Invalid country input raises HTTPException
     @pytest.mark.asyncio
-    async def test_invalid_country_input(self, mocker):
+    async def test_invalid_country_input(self):
         # Call the travel_recommendation function with invalid country input
         with pytest.raises(HTTPException):
             await travel_recommendation('', 'summer')
 
     #  Invalid season input raises HTTPException
     @pytest.mark.asyncio
-    async def test_invalid_season_input(self, mocker):
+    async def test_invalid_season_input(self):
         # Call the travel_recommendation function with invalid season input
         with pytest.raises(HTTPException):
             await travel_recommendation('USA', 'autumn')
 
     #  Empty country input raises HTTPException
     @pytest.mark.asyncio
-    async def test_empty_country_input(self, mocker):
+    async def test_empty_country_input(self):
         # Call the travel_recommendation function with empty country input
         with pytest.raises(HTTPException):
             await travel_recommendation('', 'summer')
