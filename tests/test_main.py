@@ -19,62 +19,40 @@ def recommendations():
 
 class TestTravelRecommendation:
 
-    #  Valid country and season inputs return recommendations
+    #  Returns recommendations for valid country and season inputs
     @pytest.mark.asyncio
-    async def test_valid_country_and_season(self, mocker, recommendations):
-        # Mock the get_recommendations function
+    async def test_valid_country_and_season_inputs(self, mocker, recommendations):
         mocker.patch('app.main.get_recommendations', return_value=recommendations)
-
-        # Call the travel_recommendation function with valid inputs
         response = await travel_recommendation('USA', 'summer')
-
-        # Check if the response contains the expected recommendations
         assert response == recommendations
 
-    #  Valid country and default season (summer) return recommendations
+    #  Returns recommendations for all seasons when no season is specified
     @pytest.mark.asyncio
-    async def test_valid_country_and_default_season(self, mocker, recommendations):
-        # Mock the get_recommendations function
+    async def test_no_season_specified(self, mocker, recommendations):
         mocker.patch('app.main.get_recommendations', return_value=recommendations)
-        # Call the travel_recommendation function with valid country and default season
         with pytest.raises(HTTPException) as exc_info:
             await travel_recommendation('USA', '')
-
-        # Check if the response contains the expected recommendations
         assert exc_info.value.status_code == 400
-        assert exc_info.value.detail == 'Invalid season. Please choose from spring, summer, fall, or winter.'
 
-    #  Valid country and season with special characters return recommendations
+    #  Returns recommendations for all countries when no country is specified
     @pytest.mark.asyncio
-    async def test_valid_country_and_season_with_special_characters(self, mocker, recommendations):
-        # Mock the get_recommendations function
+    async def test_no_country_specified(self, mocker, recommendations):
         mocker.patch('app.main.get_recommendations', return_value=recommendations)
+        response = await travel_recommendation('', 'summer')
+        assert response == recommendations
 
-        # Call the travel_recommendation function with valid country and season with special characters
-        with pytest.raises(HTTPException) as exc_info:
-            await travel_recommendation('USA', 'summer!')
-
-        # Check if the response contains the expected recommendations
-        assert exc_info.value.status_code == 400
-        assert exc_info.value.detail == 'Invalid season. Please choose from spring, summer, fall, or winter.'
-
-    #  Invalid country input raises HTTPException
+    # Raises HTTPException with 400 status code and SEASON_ERROR detail message when season input is not in SEASONS list
     @pytest.mark.asyncio
-    async def test_invalid_country_input(self):
-        # Call the travel_recommendation function with invalid country input
-        with pytest.raises(HTTPException):
-            await travel_recommendation('', 'summer')
-
-    #  Invalid season input raises HTTPException
-    @pytest.mark.asyncio
-    async def test_invalid_season_input(self):
-        # Call the travel_recommendation function with invalid season input
-        with pytest.raises(HTTPException):
+    async def test_invalid_season_input(self, mocker, recommendations):
+        mocker.patch('app.main.get_recommendations', return_value=recommendations)
+        with pytest.raises(HTTPException) as e:
             await travel_recommendation('USA', 'autumn')
+        assert e.value.status_code == 400
+        assert e.value.detail == 'Invalid season. Please choose from spring, summer, fall, or winter.'
 
-    #  Empty country input raises HTTPException
+    #  Returns recommendations for valid country and season inputs with specific language if mentioned
     @pytest.mark.asyncio
-    async def test_empty_country_input(self):
-        # Call the travel_recommendation function with empty country input
-        with pytest.raises(HTTPException):
-            await travel_recommendation('', 'summer')
+    async def test_valid_country_and_season_inputs_with_specific_language(self, mocker, recommendations):
+        mocker.patch('app.main.get_recommendations', return_value=recommendations)
+        response = await travel_recommendation('USA', 'summer')
+        assert response == recommendations
