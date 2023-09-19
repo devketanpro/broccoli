@@ -21,6 +21,7 @@ def sample_response():
         ]
     }
 
+
 class TestGetRecommendations:
 
     #  Returns recommendations for valid country and season inputs
@@ -104,3 +105,51 @@ class TestGetRecommendations:
 
         assert exc.value.status_code == TIMEOUT_ERROR['status_code']
         assert exc.value.detail == TIMEOUT_ERROR['detail']
+
+    def test_invalid_response_from_openai_api(self, mocker):
+        # Mock the get_messages_func function
+        mocker.patch('app.utils.get_messages',
+                     return_value=[{"role": "system", "content": f"recommendations for USA in fall"}])
+
+        # Mock the make_chat_completion_request function
+        mocker.patch('app.utils.make_chat_completion_request', return_value={"choices": []})
+
+        # Call the get_recommendations function and expect an HTTPException to be raised
+        with pytest.raises(HTTPException):
+            get_recommendations("USA", "summer", get_messages)
+
+    #  Raises HTTPException for invalid response choices from OpenAI API
+    def test_invalid_response_choices_from_openai_api(self, mocker):
+        # Mock the get_messages_func function
+        mocker.patch('app.utils.get_messages',
+                     return_value=[{"role": "system", "content": f"recommendations for USA in fall"}])
+
+        # Mock the make_chat_completion_request function
+        mocker.patch('app.utils.make_chat_completion_request', return_value={"choices": [{}]})
+
+        # Call the get_recommendations function and expect an HTTPException to be raised
+        with pytest.raises(HTTPException):
+            get_recommendations("USA", "summer", get_messages)
+
+    #  Raises HTTPException for any exception during API request
+    def test_exception_during_api_request(self, mocker):
+        # Mock the get_messages_func function
+        mocker.patch('app.utils.get_messages',
+                     return_value=[{"role": "system", "content": f"recommendations for USA in fall"}])
+
+        # Mock the make_chat_completion_request function to raise an exception
+        mocker.patch('app.utils.make_chat_completion_request', side_effect=Exception)
+
+        # Call the get_recommendations function and expect an HTTPException to be raised
+        with pytest.raises(HTTPException):
+            get_recommendations("USA", "summer", get_messages)
+
+    def test_exception_with_wrong_response_content(self, mocker):
+        # Mock the get_messages_func function
+        mocker.patch('app.utils.get_messages',
+                     return_value=[{"role": "system", "content": f"recommendations for USA in fall"}])
+        mocker.patch('openai.ChatCompletion.create',
+                     return_value=Mock(choices=[Mock(message=Mock(content=json.dumps({})))]))
+        # Call the get_recommendations function and expect an HTTPException to be raised
+        with pytest.raises(HTTPException):
+            get_recommendations("USA", "summer", get_messages)

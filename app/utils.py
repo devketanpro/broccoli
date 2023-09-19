@@ -45,6 +45,7 @@ def validate_response(response: Dict) -> bool:
     if "country" in response and "season" in response and "recommendations" in response:
         if len(response["recommendations"]) == 3:
             return True
+    return False
 
 
 def get_recommendations(

@@ -18,6 +18,9 @@ build:
 run:
 	$(DOCKER_RUN)
 
+test:
+	pytest --cov=app --cov-report=html
+
 # Define a clean rule to remove the Docker image
 clean:
 	docker rmi -f $(IMAGE_NAME)
