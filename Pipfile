@@ -10,6 +10,7 @@ pytest = "*"
 pycountry = "*"
 openai = "*"
 python-dotenv = "*"
+httpx = "*"
 
 [dev-packages]
 
