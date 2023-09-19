@@ -1,11 +1,11 @@
-import json
 from typing import List, Dict, Any
 
 import openai
+import ujson
 from fastapi import HTTPException
 
 from app.constants import API_KEY, PROMPT, MODEL
-from app.errors import RESPONSE_ERROR, API_ERROR, CONNECTION_OR_RATELIMIT_ERROR, UNKNOWN_ERROR
+from app.errors import RESPONSE_ERROR, API_ERROR, CONNECTION_OR_RATELIMIT_ERROR, UNKNOWN_ERROR, TIMEOUT_ERROR
 
 
 def get_messages(country: str, season: str) -> List[Dict[str, str]]:
@@ -22,26 +22,24 @@ def get_messages(country: str, season: str) -> List[Dict[str, str]]:
 def get_recommendations(country: str, season: str) -> Dict[str, Any]:
     # Generate the prompt with specific language if mentioned
     messages = get_messages(country=country, season=season)
-
     try:
-        # Make a request to the OpenAI API
+        # Make a request to the OpenAI API with a timeout
         response = openai.ChatCompletion.create(
             model=MODEL,
             messages=messages,
             api_key=API_KEY,
+            timeout=5,  # Set a timeout value in seconds
         )
-
         # Check if there are response choices
         if response.choices:
-            return json.loads(response.choices[0].message.content)
+            return ujson.loads(response.choices[0].message.content)
         else:
             raise HTTPException(**RESPONSE_ERROR)
-
     except openai.error.APIError:
         raise HTTPException(**API_ERROR)
-
     except (openai.error.APIConnectionError, openai.error.RateLimitError):
         raise HTTPException(**CONNECTION_OR_RATELIMIT_ERROR)
-
+    except openai.error.Timeout:
+        raise HTTPException(**TIMEOUT_ERROR)
     except Exception:
         raise HTTPException(**UNKNOWN_ERROR)

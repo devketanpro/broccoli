@@ -13,6 +13,7 @@ python-dotenv = "*"
 httpx = "*"
 pytest-mock = "*"
 pytest-asyncio = "*"
+ujson = "*"
 
 [dev-packages]
 
