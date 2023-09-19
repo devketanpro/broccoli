@@ -15,4 +15,4 @@ RUN pipenv install
 EXPOSE 8000
 
 # Define the command to run your FastAPI application
-CMD ["pipenv", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["pipenv", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
