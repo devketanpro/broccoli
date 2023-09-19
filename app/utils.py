@@ -31,11 +31,11 @@ def get_recommendations(country: str, season: str) -> Dict[str, Any]:
         else:
             raise HTTPException(**RESPONSE_ERROR)
 
-    except openai.error.APIError as e:
+    except openai.error.APIError:
         raise HTTPException(**API_ERROR)
 
-    except (openai.error.APIConnectionError, openai.error.RateLimitError) as e:
+    except (openai.error.APIConnectionError, openai.error.RateLimitError):
         raise HTTPException(**CONNECTION_OR_RATELIMIT_ERROR)
 
-    except Exception as e:
+    except Exception:
         raise HTTPException(**UNKNOWN_ERROR)
