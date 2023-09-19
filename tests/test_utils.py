@@ -5,6 +5,7 @@ import openai
 import pytest
 from fastapi import HTTPException
 
+from app.errors import TIMEOUT_ERROR
 from app.utils import get_recommendations, get_messages
 
 
@@ -106,9 +107,9 @@ class TestGetMessages:
                 "three lines") in \
                result[0]["content"]
 
-    #  Returns a list with one dictionary containing the user message with a country and season that have special characters.
-    def test_returns_list_with_one_dictionary_containing_user_message_with_country_and_season_that_have_special_characters(
-            self):
+    # Returns a list with one dictionary containing the user message with a country and season that have special
+    # characters.
+    def test_get_message_with_country_and_season_that_have_special_characters(self):
         result = get_messages("!@#$%^&*", "summer!")
         assert isinstance(result, list)
         assert len(result) == 1
@@ -197,3 +198,17 @@ class TestGetRecommendations:
         mocker.patch('openai.ChatCompletion.create', side_effect=openai.error.InvalidRequestError)
         with pytest.raises(HTTPException):
             get_recommendations("USA", "summer")
+
+    def test_raises_http_exception_on_timeout(self, mocker):
+        # Mock the get_messages function to return a valid messages list
+        mocker.patch('app.utils.get_messages', return_value=[{'role': 'user', 'content': 'prompt'}])
+
+        # Mock the openai.ChatCompletion.create function to raise a Timeout error
+        mocker.patch('openai.ChatCompletion.create', side_effect=openai.error.Timeout)
+
+        # Call the get_recommendations function and assert that it raises an HTTPException with the TIMEOUT_ERROR
+        with pytest.raises(HTTPException) as exc:
+            get_recommendations('country', 'season')
+
+        assert exc.value.status_code == TIMEOUT_ERROR['status_code']
+        assert exc.value.detail == TIMEOUT_ERROR['detail']
