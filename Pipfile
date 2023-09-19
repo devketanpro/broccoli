@@ -11,6 +11,8 @@ pycountry = "*"
 openai = "*"
 python-dotenv = "*"
 httpx = "*"
+pytest-mock = "*"
+pytest-asyncio = "*"
 
 [dev-packages]
 
