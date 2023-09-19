@@ -20,4 +20,4 @@ run:
 
 # Define a clean rule to remove the Docker image
 clean:
-	docker rmi $(IMAGE_NAME)
+	docker rmi -f $(IMAGE_NAME)
