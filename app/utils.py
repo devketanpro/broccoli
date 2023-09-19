@@ -9,6 +9,12 @@ from app.errors import RESPONSE_ERROR, API_ERROR, CONNECTION_OR_RATELIMIT_ERROR,
 
 
 def get_messages(country: str, season: str) -> List[Dict[str, str]]:
+    if not country or not season:
+        return []
+
+    if not isinstance(country, str) or not isinstance(season, str):
+        raise TypeError
+
     prompt = PROMPT.format(country=country, season=season)
     return [{'role': 'user', 'content': f'{prompt}'}]
 

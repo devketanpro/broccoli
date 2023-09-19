@@ -5,7 +5,120 @@ import openai
 import pytest
 from fastapi import HTTPException
 
-from app.utils import get_recommendations
+from app.utils import get_recommendations, get_messages
+
+
+class TestGetMessages:
+
+    #  Returns a list with one dictionary containing the user message.
+    def test_returns_list_with_one_dictionary_containing_user_message(self):
+        result = get_messages("USA", "summer")
+        assert isinstance(result, list)
+        assert len(result) == 1
+        assert isinstance(result[0], dict)
+        assert result[0]["role"] == "user"
+        assert ("Generate a personalized travel itinerary for a trip to USA. The traveler is interested in a vacation "
+                "during summer. including suggested activity options for one placeConvert all details into a JSON "
+                "response with keys country, season and recommendations list.Provide short and quick response in "
+                "three lines") in result[0]["content"]
+
+    #  Returns a list with one dictionary containing the user message with the correct country and season.
+    def test_returns_list_with_one_dictionary_containing_user_message_with_correct_country_and_season(self):
+        result = get_messages("France", "spring")
+        assert isinstance(result, list)
+        assert len(result) == 1
+        assert isinstance(result[0], dict)
+        assert result[0]["role"] == "user"
+        assert ("Generate a personalized travel itinerary for a trip to France. The traveler is interested in a "
+                "vacation during spring. including suggested activity options for one placeConvert all details into a "
+                "JSON response with keys country, season and recommendations list.Provide short and quick response in "
+                "three lines") in result[0]["content"]
+
+    #  Returns an empty list when country and season are empty strings.
+    def test_returns_empty_list_when_country_and_season_are_empty_strings(self):
+        result = get_messages("", "")
+        assert isinstance(result, list)
+        assert len(result) == 0
+
+    #  Returns an empty list when country and season are None.
+    def test_returns_empty_list_when_country_and_season_are_none(self):
+        result = get_messages(None, None)
+        assert isinstance(result, list)
+        assert len(result) == 0
+
+    #  Raises a TypeError when country or season are not strings.
+    def test_raises_type_error_when_country_or_season_are_not_strings(self):
+        with pytest.raises(TypeError):
+            get_messages(123, "summer")
+        with pytest.raises(TypeError):
+            get_messages("USA", 456)
+
+    #  Returns a list with one dictionary containing the user message with special characters in the country and season.
+    def test_returns_list_with_one_dictionary_containing_user_message_with_special_characters_in_country_and_season(
+            self):
+        result = get_messages("Côte d'Ivoire", "été")
+        assert isinstance(result, list)
+        assert len(result) == 1
+        assert isinstance(result[0], dict)
+        assert result[0]["role"] == "user"
+        assert ("Generate a personalized travel itinerary for a trip to Côte d'Ivoire. The traveler is interested in a "
+                "vacation during été. including suggested activity options for one placeConvert all details into a "
+                "JSON response with keys country, season and recommendations list.Provide short and quick response in "
+                "three lines") in \
+               result[0]["content"]
+
+    #  Returns a list with one dictionary containing the user message with a long country and season.
+    def test_returns_list_with_one_dictionary_containing_user_message_with_long_country_and_season(self):
+        result = get_messages("United States of America", "spring")
+        assert isinstance(result, list)
+        assert len(result) == 1
+        assert isinstance(result[0], dict)
+        assert result[0]["role"] == "user"
+        assert ("Generate a personalized travel itinerary for a trip to United States of America. The traveler is "
+                "interested in a vacation during spring. including suggested activity options for one placeConvert "
+                "all details into a JSON response with keys country, season and recommendations list.Provide short "
+                "and quick response in three lines") in \
+               result[0]["content"]
+
+    #  Returns a list with one dictionary containing the user message with a short country and season.
+    def test_returns_list_with_one_dictionary_containing_user_message_with_short_country_and_season(self):
+        result = get_messages("UK", "fall")
+        assert isinstance(result, list)
+        assert len(result) == 1
+        assert isinstance(result[0], dict)
+        assert result[0]["role"] == "user"
+        assert ("Generate a personalized travel itinerary for a trip to UK. The traveler is interested in a vacation "
+                "during fall. including suggested activity options for one placeConvert all details into a JSON "
+                "response with keys country, season and recommendations list.Provide short and quick response in "
+                "three lines") in \
+               result[0]["content"]
+
+    #  Returns a list with one dictionary containing the user message with a country and season that have numbers.
+    def test_returns_list_with_one_dictionary_containing_user_message_with_country_and_season_that_have_numbers(self):
+        result = get_messages("USA123", "2022")
+        assert isinstance(result, list)
+        assert len(result) == 1
+        assert isinstance(result[0], dict)
+        assert result[0]["role"] == "user"
+        assert ("Generate a personalized travel itinerary for a trip to USA123. The traveler is interested in a "
+                "vacation during 2022. including suggested activity options for one placeConvert all details into a "
+                "JSON response with keys country, season and recommendations list.Provide short and quick response in "
+                "three lines") in \
+               result[0]["content"]
+
+    #  Returns a list with one dictionary containing the user message with a country and season that have special characters.
+    def test_returns_list_with_one_dictionary_containing_user_message_with_country_and_season_that_have_special_characters(
+            self):
+        result = get_messages("!@#$%^&*", "summer!")
+        assert isinstance(result, list)
+        assert len(result) == 1
+        assert isinstance(result[0], dict)
+        assert result[0]["role"] == "user"
+        assert ("Generate a personalized travel itinerary for a trip to !@#$%^&*. The traveler is interested in a "
+                "vacation during summer!. including suggested activity options for one placeConvert all details into "
+                "a JSON response with keys country, season and recommendations list.Provide short and quick response "
+                "in three lines") in \
+               result[0]["content"]
 
 
 class TestGetRecommendations:
