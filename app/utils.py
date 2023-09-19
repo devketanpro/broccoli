@@ -87,13 +87,12 @@ def make_chat_completion_request(messages: List[Dict[str, str]]) -> Any:
     )
 
 
-def handle_error(exception, custom_message=None):
+def handle_error(exception):
     """
     Handle different types of exceptions in a centralized manner.
     
     Args:
         exception: The exception to handle.
-        custom_message (str, optional): A custom error message to provide more context about the error.
     """
     logging.error(f"An error occurred: {exception}")
 
