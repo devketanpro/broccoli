@@ -1,14 +1,16 @@
-# Define the target name
-TARGET = broccoli
-
-# Define the Docker image name
-IMAGE_NAME = broccoli
+# Define the Docker app name
+APP_NAME = broccoli
 
 # Define the Docker build command
-DOCKER_BUILD = docker build -t $(IMAGE_NAME) .
+DOCKER_BUILD = docker build -t $(APP_NAME) .
+
+DOCKER_CLEAN = ./clean.sh
 
 # Define the Docker run command
-DOCKER_RUN = docker run -p 3000:3000 --env-file=.env -v broccoli:/app $(IMAGE_NAME)
+DOCKER_RUN = docker container run -p 3000:3000 --env-file=.env -v $(APP_NAME):/app  $(APP_NAME)
+
+# Define the Pytest run command
+PYTEST_RUN = docker run --rm -v $(APP_NAME):/app $(APP_NAME) pipenv run pytest --cov=app --cov-report=html --cov-report=xml --cov-report=term-missing --cov-fail-under=100
 
 # Define the rule to build the Docker image
 build:
@@ -19,8 +21,8 @@ run:
 	$(DOCKER_RUN)
 
 test:
-	pytest --cov=app --cov-report=html
+	$(PYTEST_RUN)
 
 # Define a clean rule to remove the Docker image
 clean:
-	docker rmi -f $(IMAGE_NAME)
+	$(DOCKER_CLEAN)

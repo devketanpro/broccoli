@@ -2,6 +2,7 @@ import logging
 from typing import List, Dict, Any, Callable
 
 import openai
+import pycountry
 import ujson
 from fastapi import HTTPException
 
@@ -23,19 +24,26 @@ def get_messages(country: str, season: str) -> List[Dict[str, str]]:
     Returns:
         List[Dict[str, str]]: A list of messages for the chatbot.
     """
-    if not isinstance(country, str):
-        raise TypeError("The 'country' parameter must be a string.")
-    if not isinstance(season, str):
-        raise TypeError("The 'season' parameter must be a string.")
+    try:
+        if not isinstance(country, str):
+            raise TypeError("The 'country' parameter must be a string.")
+        if not isinstance(season, str):
+            raise TypeError("The 'season' parameter must be a string.")
 
-    if not country:
-        return [{ROLE_KEY: 'user', CONTENT_KEY: 'Country is required.'}]
+        if not country:
+            return [{ROLE_KEY: 'user', CONTENT_KEY: 'Country is required.'}]
 
-    if not season:
-        return [{ROLE_KEY: 'user', CONTENT_KEY: 'Season is required.'}]
+        if not season:
+            return [{ROLE_KEY: 'user', CONTENT_KEY: 'Season is required.'}]
 
-    if season not in SEASONS:
-        raise ValueError("Invalid season.")
+        is_country_valid = pycountry.countries.get(name=country)
+        if is_country_valid is None:
+            raise ValueError("Invalid country.")
+
+        if season not in SEASONS:
+            raise ValueError("Invalid season.")
+    except Exception as e:
+        handle_error(e)
 
     prompt = PROMPT.format(country=country, season=season)
     return [{ROLE_KEY: 'user', CONTENT_KEY: f'{prompt}'}]
@@ -110,5 +118,7 @@ def handle_error(exception):
     exception_type = type(exception)
     if exception_type in EXCEPTION_MAPPING:
         raise HTTPException(**EXCEPTION_MAPPING[exception_type])
+    elif error := exception.args:
+        raise HTTPException(status_code=400, detail=error)
     else:
         raise HTTPException(**UNKNOWN_ERROR)

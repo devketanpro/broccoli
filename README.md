@@ -64,6 +64,12 @@ To start pytest testing please execute below command.
 make test
 ```
 
+## Clean setup
+
+For cleaning all containers, image, volume related to app please execute below command.
+```commandline
+make clean
+```
 
 ## Conclusion
 

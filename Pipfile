@@ -4,14 +4,19 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+pip = "23.1.1"
 ujson = "5.8.0"
 fastapi = "0.103.1"
 uvicorn = "0.23.2"
 openai = "0.28.0"
+httpx = "0.25.0"
 pytest = "7.4.2"
 pytest-mock = "3.11.1"
 pytest-asyncio = "0.21.1"
 pytest-cov = "4.1.0"
+pycountry = "22.3.5"
+black = "*"
+isort = "*"
 
 [dev-packages]
 
