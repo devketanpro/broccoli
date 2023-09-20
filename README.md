@@ -24,19 +24,23 @@ git clone https://github.com/devketanpro/broccoli.git
 cd broccoli
 ```
 
-3. Build the Docker image using the following command:
+3. Update environment variables:
+
+Also create `.env` from `.env.example` file and update API_KEY with valid value from [platform.openai.com](https://platform.openai.com/account/api-keys)
+
+4. Build the Docker image using the following command:
 
 ```commandline
 make build
 ```
 
-4. Once the image is built, run the Docker container using the following command:
+5. Once the image is built, run the Docker container using the following command:
 
 ```commandline
 make run
 ```
 
-5. The project will now be running on  `localhost:3000` .
+6. The project will now be running on  `localhost:3000` .
 
 ## Cleaning Up
 
@@ -45,6 +49,21 @@ To remove the Docker image created for this project, use the following command:
 ```commandline
 make clean
 ```
+
+## Quick start
+
+After completing third point please execute below file.  
+```commandline
+source run.sh
+```
+
+## Run Tests
+
+To start pytest testing please execute below command.
+```commandline
+make test
+```
+
 
 ## Conclusion
 
