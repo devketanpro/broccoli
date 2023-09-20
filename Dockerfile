@@ -11,8 +11,8 @@ COPY . /app
 RUN pip install pipenv
 RUN pipenv install
 
-# Expose the port that FastAPI will run on (default is 8000)
-EXPOSE 8000
+# Expose the port that FastAPI will run on (default is 3000)
+EXPOSE 3000
 
 # Define the command to run your FastAPI application
-CMD ["pipenv", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+CMD ["pipenv", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "3000", "--reload"]

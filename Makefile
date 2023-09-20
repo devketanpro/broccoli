@@ -8,7 +8,7 @@ IMAGE_NAME = broccoli
 DOCKER_BUILD = docker build -t $(IMAGE_NAME) .
 
 # Define the Docker run command
-DOCKER_RUN = docker run -p 8000:8000 -v broccoli:/app $(IMAGE_NAME)
+DOCKER_RUN = docker run -p 3000:3000 -v broccoli:/app $(IMAGE_NAME)
 
 # Define the rule to build the Docker image
 build:

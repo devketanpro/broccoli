@@ -36,7 +36,7 @@ make build
 make run
 ```
 
-5. The project will now be running on  `localhost:8000` .
+5. The project will now be running on  `localhost:3000` .
 
 ## Cleaning Up
 
