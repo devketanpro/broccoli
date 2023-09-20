@@ -44,14 +44,6 @@ make run
 
 7. You can easily access swagger docs to run [travel_recommendation API](http://localhost:3000/docs#/default/travel_recommendation__get)
 
-## Cleaning Up
-
-To remove the Docker image created for this project, use the following command:
-
-```commandline
-make clean
-```
-
 ## Quick start
 
 After completing third point please execute below file.  
