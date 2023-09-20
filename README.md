@@ -40,7 +40,9 @@ make build
 make run
 ```
 
-6. The project will now be running on  `localhost:3000` .
+6. The project will now be running on  `localhost:3000`.
+
+7. You can easily access swagger docs to run [travel_recommendation API](http://localhost:3000/docs#/default/travel_recommendation__get)
 
 ## Cleaning Up
 
